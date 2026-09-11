@@ -17,7 +17,7 @@ export const ProductSlideshow = ({ images, title, className }: Props) => {
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log("swiper")}
         >
-            <SwiperSlide />
+            <SwiperSlide></SwiperSlide>
 
         </Swiper>
     </div>
