@@ -11,7 +11,7 @@ This project is set up for PostgreSQL. Prisma ORM also supports other databases.
 
 ## Your data contract
 
-Your data contract is the heart of your application. It lives at [`src/prisma/schema.prisma`](src/prisma/schema.prisma) and describes your models:
+Your data contract is the heart of your application. It lives at [`src/prisma/contract.prisma`](src/prisma/contract.prisma) and describes your models:
 
 ```prisma
 model User {
@@ -55,7 +55,7 @@ import { defineConfig as ormConfig } from '@prisma/orm-postgres/config';
 
 export default definePrismaConfig({
   orm: ormConfig({
-    contract: './src/prisma/schema.prisma',
+    contract: './src/prisma/contract.prisma',
     db: {
       connection: process.env['DATABASE_URL']!,
     },
@@ -85,7 +85,7 @@ npx prisma migration status    # Show migration status
 
 | File | Purpose |
 |---|---|
-| [`src/prisma/schema.prisma`](src/prisma/schema.prisma) | Your data contract — define your models here |
+| [`src/prisma/contract.prisma`](src/prisma/contract.prisma) | Your data contract — define your models here |
 | [`prisma.config.ts`](prisma.config.ts) | CLI configuration |
 | [`src/prisma/db.ts`](src/prisma/db.ts) | Database client — `import { db } from './src/prisma/db'` |
 | `src/prisma/contract.json` | Compiled contract (generated) |
@@ -93,7 +93,7 @@ npx prisma migration status    # Show migration status
 
 ### Workflow
 
-1. Edit [`src/prisma/schema.prisma`](src/prisma/schema.prisma) to add or change models.
+1. Edit [`src/prisma/contract.prisma`](src/prisma/contract.prisma) to add or change models.
 2. Run `npx prisma contract emit` to regenerate the contract.
 3. Query your models — your IDE will autocomplete everything.
 
