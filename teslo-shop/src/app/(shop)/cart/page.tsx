@@ -5,7 +5,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 const productsInCart = [initialData.products[0], initialData.products[1], initialData.products[2]];
-export default function() {
+export default function CartPage() {
 
   redirect('/empty');
 

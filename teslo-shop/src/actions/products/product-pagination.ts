@@ -2,27 +2,66 @@
 
 import { db } from "@/prisma/db";
 
-export const getPaginatedProductsWithImages = async() => {
+type Gender = (typeof db.enums.public.Gender.values)[number];
+
+interface PaginationOptions {
+    page?: number;
+    take?: number;
+    gender?: Gender;
+}
+
+export const getPaginatedProductsWithImages = async ({
+    page = 1,
+    take = 12,
+    gender,
+}: PaginationOptions) => {
+
+    if (isNaN(Number(page))) page = 1;
+    if (page < 1) page = 1;
+
     try {
-        const products = await db.orm.public.Product.findMany({
-            include: {
-                ProductImage: {
-                    take: 2,
-                    select: {
-                        url: true
-                    }
-                }
-            }
-        })
+        // Filtro opcional por género
+        const whereGender = gender !== undefined
+            ? { gender }
+            : {};
+
+        // 1. Obtener los productos
+        const products = await db.orm.public.Product
+            .where(whereGender)
+            .include(
+                "images",
+                (images) => images
+                    .select("url")
+                    .limit(2)
+            )
+            .limit(take)
+            .offset((page - 1) * take)
+            .all();
+
+        // 2. Obtener el número total de productos
+        const { total: totalCount } = await db.orm.public.Product
+            .where(whereGender)
+            .aggregate((a) => ({
+                total: a.count(),
+            }));
+
+        const totalPages = Math.ceil(totalCount / take);
 
         return {
-            products: products.map( product => ({
+            currentPage: page,
+            totalPages,
+            products: products.map((product) => ({
                 ...product,
-                images: product.ProductImage.map(image => image.url)
-            }))
-        }
+
+                sizes: [...product.sizes],
+                tags: [...product.tags],
+
+                images: product.images.map((image) => image.url),
+            })),
+        };
 
     } catch (err) {
-        throw new Error("No se pudieron cargar los productos")
+        console.error(err);
+        throw new Error("No se pudieron cargar los productos");
     }
-}
+};
