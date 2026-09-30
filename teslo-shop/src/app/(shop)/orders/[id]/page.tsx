@@ -11,7 +11,7 @@ interface Props {
   params: { id: string; }
 }
 
-export default function({ params }: Props) {
+export default function OrderIdPage({ params }: Props) {
 
   const { id } = params;
   return (

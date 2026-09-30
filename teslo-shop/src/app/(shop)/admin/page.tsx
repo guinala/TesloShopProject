@@ -1,5 +1,5 @@
 
-export default function Admin() {
+export default function AdminPage() {
   return (
     <div>
       <h1>Hello Page</h1>
