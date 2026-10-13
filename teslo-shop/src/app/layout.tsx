@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { titleFont } from "@/config/fonts";
+import { Provider } from "@/components";
 
 export const metadata: Metadata = {
   title: {
@@ -12,11 +13,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${titleFont.className} ${titleFont.className} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en">
+      <body className={titleFont.className}>
+        <Provider>{children}</Provider>
+      </body>
     </html>
   );
 }

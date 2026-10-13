@@ -15,6 +15,10 @@
     "productImage": {
       "model": "ProductImage",
       "namespace": "public"
+    },
+    "user": {
+      "model": "User",
+      "namespace": "public"
     }
   },
   "domain": {
@@ -39,6 +43,19 @@
               {
                 "name": "unisex",
                 "value": "unisex"
+              }
+            ]
+          },
+          "Role": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "admin",
+                "value": "admin"
+              },
+              {
+                "name": "user",
+                "value": "user"
               }
             ]
           },
@@ -332,6 +349,93 @@
               "namespaceId": "public",
               "table": "productImage"
             }
+          },
+          "User": {
+            "fields": {
+              "email": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "emailVerified": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "image": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "password": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Role",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "email": {
+                  "column": "email"
+                },
+                "emailVerified": {
+                  "column": "emailVerified"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "image": {
+                  "column": "image"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "password": {
+                  "column": "password"
+                },
+                "role": {
+                  "column": "role"
+                }
+              },
+              "namespaceId": "public",
+              "table": "user"
+            }
           }
         }
       }
@@ -572,6 +676,76 @@
                 ]
               },
               "uniques": []
+            },
+            "user": {
+              "checks": [
+                {
+                  "expression": "\"role\" IN ('admin', 'user')",
+                  "name": "user_role_check_b73ac96c",
+                  "prefix": "user_role_check"
+                }
+              ],
+              "columns": {
+                "email": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "emailVerified": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "nativeType": "timestamptz",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "image": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "password": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "user"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Role",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "email"
+                  ]
+                }
+              ]
             }
           },
           "valueSet": {
@@ -582,6 +756,13 @@
                 "women",
                 "kid",
                 "unisex"
+              ]
+            },
+            "Role": {
+              "kind": "valueSet",
+              "values": [
+                "admin",
+                "user"
               ]
             },
             "Size": {
@@ -602,10 +783,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "1de403cb67f5de4caaf0210b4d12057d62e4dc47904e75494ea37a216c367341"
+    "storageHash": "58efe31e42639cdb47630841872966cc1f9703a628200bf874a9f690bfbf3f32"
   },
   "execution": {
-    "executionHash": "9f880d5b5067b814ec113b426d01af48841f8dc3029cfa146bc2efbfcdf8a034",
+    "executionHash": "95dc15269bdb163cd753e4b3594af18cbe321d7695f3c84f538841d5127a4f1a",
     "mutations": {
       "defaults": [
         {
@@ -628,6 +809,17 @@
             "column": "id",
             "namespace": "public",
             "table": "product"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "user"
           }
         }
       ]

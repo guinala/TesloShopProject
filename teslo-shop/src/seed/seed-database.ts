@@ -9,11 +9,15 @@ async function main() {
   await db.transaction(async (tx) => {
 
     // 1. Borrar registros previos
+    await tx.orm.public.User.where({}).deleteAll();
     await tx.orm.public.ProductImage.where({}).deleteAll();
     await tx.orm.public.Product.where({}).deleteAll();
     await tx.orm.public.Category.where({}).deleteAll();
 
-    const { categories, products } = initialData;
+    const { categories, products, users } = initialData;
+
+    console.log(users);
+    await db.orm.public.User.createAll(users);
 
     // 2. Crear categorías
     const categoriesData = categories.map((name) => ({

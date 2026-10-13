@@ -30,11 +30,7 @@ export default async function GenderIdPage({ params, searchParams }: Props) {
   }
 
   const labels: Record<string, string> = { 'men': 'para hombres', 'women': 'para mujeres', 'kid': 'para niños', 'unisex': 'para todos'}
-
-  // if ( id === 'kids' ) {
-  //   notFound();
-  // }
-
+  
   return (
     <>
       <Title 
