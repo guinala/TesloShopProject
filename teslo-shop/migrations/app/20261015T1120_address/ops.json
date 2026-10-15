@@ -1,0 +1,245 @@
+[
+  {
+    "id": "table.country",
+    "label": "Create table \"country\"",
+    "summary": "Creates table \"country\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "country"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"country\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"country\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"country\"",
+        "sql": "CREATE TABLE \"public\".\"country\" (\n  \"id\" text NOT NULL,\n  \"name\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"country\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"country\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.userAddress",
+    "label": "Create table \"userAddress\"",
+    "summary": "Creates table \"userAddress\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "userAddress"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"userAddress\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"userAddress\"",
+        "sql": "CREATE TABLE \"public\".\"userAddress\" (\n  \"address\" text NOT NULL,\n  \"address2\" text NOT NULL,\n  \"countryId\" text NOT NULL,\n  \"firstName\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"lastName\" text NOT NULL,\n  \"phone\" text NOT NULL,\n  \"postalCode\" text NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"userAddress\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.userAddress.userAddress_userId_key",
+    "label": "Add unique constraint on \"userAddress\" (userId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "userAddress_userId_key",
+        "table": "userAddress"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"userAddress_userId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userAddress_userId_key",
+          "public",
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"userAddress_userId_key\"",
+        "sql": "ALTER TABLE \"public\".\"userAddress\" ADD CONSTRAINT \"userAddress_userId_key\" UNIQUE (\"userId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"userAddress_userId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userAddress_userId_key",
+          "public",
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.userAddress.userAddress_countryId_idx_27b43b27",
+    "label": "Create index \"userAddress_countryId_idx_27b43b27\" on \"userAddress\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "userAddress_countryId_idx_27b43b27",
+        "table": "userAddress"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"userAddress_countryId_idx_27b43b27\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userAddress_countryId_idx_27b43b27\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"userAddress_countryId_idx_27b43b27\"",
+        "sql": "CREATE INDEX \"userAddress_countryId_idx_27b43b27\" ON \"public\".\"userAddress\" (\"countryId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"userAddress_countryId_idx_27b43b27\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"userAddress_countryId_idx_27b43b27\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.userAddress.userAddress_countryId_fkey",
+    "label": "Add foreign key \"userAddress_countryId_fkey\" on \"userAddress\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "userAddress_countryId_fkey",
+        "table": "userAddress"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"userAddress_countryId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userAddress_countryId_fkey",
+          "public",
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"userAddress_countryId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"userAddress\"\nADD CONSTRAINT \"userAddress_countryId_fkey\"\nFOREIGN KEY (\"countryId\")\nREFERENCES \"public\".\"country\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"userAddress_countryId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userAddress_countryId_fkey",
+          "public",
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "foreignKey.userAddress.userAddress_userId_fkey",
+    "label": "Add foreign key \"userAddress_userId_fkey\" on \"userAddress\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "foreignKey",
+        "name": "userAddress_userId_fkey",
+        "table": "userAddress"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure FK \"userAddress_userId_fkey\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userAddress_userId_fkey",
+          "public",
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add FK \"userAddress_userId_fkey\"",
+        "sql": "ALTER TABLE \"public\".\"userAddress\"\nADD CONSTRAINT \"userAddress_userId_fkey\"\nFOREIGN KEY (\"userId\")\nREFERENCES \"public\".\"user\" (\"id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify FK \"userAddress_userId_fkey\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "userAddress_userId_fkey",
+          "public",
+          "\"public\".\"userAddress\""
+        ]
+      }
+    ]
+  }
+]

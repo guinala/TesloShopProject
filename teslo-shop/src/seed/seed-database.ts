@@ -1,4 +1,5 @@
 import { db } from '../prisma/db.ts';
+import { countries } from './seed-countries.ts';
 import { initialData } from './seed.ts';
 
 const test = db.orm.public;
@@ -11,13 +12,16 @@ async function main() {
     // 1. Borrar registros previos
     await tx.orm.public.User.where({}).deleteAll();
     await tx.orm.public.ProductImage.where({}).deleteAll();
+    await tx.orm.public.Country.where({}).deleteAll();
     await tx.orm.public.Product.where({}).deleteAll();
     await tx.orm.public.Category.where({}).deleteAll();
 
     const { categories, products, users } = initialData;
 
     console.log(users);
-    await db.orm.public.User.createAll(users);
+    await tx.orm.public.User.createAll(users);
+    await tx.orm.public.Country.createAll(countries);
+    console.log("hecho");
 
     // 2. Crear categorías
     const categoriesData = categories.map((name) => ({
