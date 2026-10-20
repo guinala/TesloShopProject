@@ -88,3 +88,54 @@ model UserAddress {
   user User @relation(fields: [userId], references: [id])
   userId String @unique
 }
+
+// Pedidos
+model Order {
+  id           String   @id @default(uuid())
+  subTotal     Decimal
+  tax          Decimal
+  total        Decimal
+  itemsInOrder Int
+  isPaid       Boolean  @default(false)
+  paidAt       DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    temporal.updatedAt()
+
+  // Relaciones
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
+  orderItems   OrderItem[]
+  orderAddress OrderAddress?
+
+  @@index([userId])
+}
+
+model OrderItem {
+  id       String @id @default(uuid())
+  quantity Int
+  price    Float
+  size     Size
+
+  // Relaciones
+  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+}
+
+model OrderAddress {
+  id         String  @id @default(uuid())
+  firstName  String
+  lastName   String
+  address    String
+  address2   String?
+  postalCode String
+  city       String
+  phone      String
+
+  // Relaciones
+  country   Country @relation(fields: [countryId], references: [id])
+  countryId String
+  Order   Order  @relation(fields: [orderId], references: [id])
+  orderId String @unique
+}

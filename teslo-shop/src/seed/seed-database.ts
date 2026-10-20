@@ -10,6 +10,10 @@ async function main() {
   await db.transaction(async (tx) => {
 
     // 1. Borrar registros previos
+    await tx.orm.public.OrderAddress.where({}).deleteAll();
+    await tx.orm.public.OrderItem.where({}).deleteAll();
+    await tx.orm.public.Order.where({}).deleteAll();
+
     await tx.orm.public.User.where({}).deleteAll();
     await tx.orm.public.ProductImage.where({}).deleteAll();
     await tx.orm.public.Country.where({}).deleteAll();
