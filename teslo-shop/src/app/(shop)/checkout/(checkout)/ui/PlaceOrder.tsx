@@ -49,7 +49,7 @@ export const PlaceOrder = () => {
 
     //* Todo salio bien!
     clearCart();
-    router.replace('/orders/' + resp.order?.id );
+    router.replace('/orders/' + resp.order.id );
 
 
   }
@@ -121,6 +121,7 @@ export const PlaceOrder = () => {
         <button
           // href="/orders/123"
           onClick={ onPlaceOrder }
+          disabled={isPlacingOrder}
           className={
             clsx({
               'btn-primary': !isPlacingOrder,

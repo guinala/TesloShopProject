@@ -232,21 +232,28 @@
               "subTotal": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/numeric@1",
+                  "codecId": "pg/float8@1",
                   "kind": "scalar"
                 }
               },
               "tax": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/numeric@1",
+                  "codecId": "pg/float8@1",
                   "kind": "scalar"
                 }
               },
               "total": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/numeric@1",
+                  "codecId": "pg/float8@1",
+                  "kind": "scalar"
+                }
+              },
+              "transactionId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
@@ -266,7 +273,7 @@
               }
             },
             "relations": {
-              "orderAddress": {
+              "OrderAddress": {
                 "cardinality": "1:1",
                 "nullable": true,
                 "on": {
@@ -282,7 +289,7 @@
                   "namespace": "public"
                 }
               },
-              "orderItems": {
+              "OrderItem": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
@@ -339,6 +346,9 @@
                 },
                 "total": {
                   "column": "total"
+                },
+                "transactionId": {
+                  "column": "transactionId"
                 },
                 "updatedAt": {
                   "column": "updatedAt"
@@ -521,7 +531,7 @@
               "productId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -1157,19 +1167,24 @@
                   "nullable": true
                 },
                 "subTotal": {
-                  "codecId": "pg/numeric@1",
-                  "nativeType": "numeric",
+                  "codecId": "pg/float8@1",
+                  "nativeType": "float8",
                   "nullable": false
                 },
                 "tax": {
-                  "codecId": "pg/numeric@1",
-                  "nativeType": "numeric",
+                  "codecId": "pg/float8@1",
+                  "nativeType": "float8",
                   "nullable": false
                 },
                 "total": {
-                  "codecId": "pg/numeric@1",
-                  "nativeType": "numeric",
+                  "codecId": "pg/float8@1",
+                  "nativeType": "float8",
                   "nullable": false
+                },
+                "transactionId": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "updatedAt": {
                   "codecId": "pg/timestamptz-temporal@1",
@@ -1352,8 +1367,8 @@
                   "nullable": false
                 },
                 "productId": {
-                  "codecId": "pg/text@1",
-                  "nativeType": "text",
+                  "codecId": "pg/uuid@1",
+                  "nativeType": "uuid",
                   "nullable": false
                 },
                 "quantity": {
@@ -1851,7 +1866,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "eb6296be3feada9c763e35b39e3ea38b25f3081bafbb7bd19a0dd0ce14b1fde3"
+    "storageHash": "eb704237b8da4c1e99a8343979e74ca495cd1a49e3deaed43b17478102bffd41"
   },
   "execution": {
     "executionHash": "27a7bc6d984c31b7c1be8cef6a53488af1e192eba38455639b2a0b090450708b",

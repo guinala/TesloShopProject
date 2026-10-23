@@ -1,21 +1,20 @@
 export const revalidate = 604800; // 7 días
 
-import notFound from "../not-found";
+import { notFound } from "next/navigation";
 import { titleFont } from "@/config/fonts";
-import { ProductMobileSlideshow, ProductSlideshow, QuantitySelector, SizeSelector, StockLabel } from "@/components";
+import { ProductMobileSlideshow, ProductSlideshow, StockLabel } from "@/components";
 import { getProductBySlug } from "@/actions";
-import { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { AddToCart } from "./ui/AddToCart";
 
 interface Props {
-  params: {
+  params: Promise<{
     slug: string;
-  }
+  }>
 }
 
 export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
+  { params }: Props
 ): Promise<Metadata> {
   const slug = (await params).slug
  
@@ -28,14 +27,14 @@ export async function generateMetadata(
     openGraph: {
       title: product?.title ?? 'No encontrado',
       description: product?.description ?? 'No encontrado',
-      images: [ `/products/${ product?.images[1] }` ]
+      images: product?.images[0] ? [`/products/${product.images[0]}`] : []
     }
   }
 }
 
 export default async function ProductSlugPage({ params }: Props) {
   
-  const { slug } = params;
+  const { slug } = await params;
   const product = await getProductBySlug(slug);
 
   if ( !product ) {

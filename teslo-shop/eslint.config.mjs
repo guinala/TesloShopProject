@@ -5,7 +5,7 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  module.exports = {
+  {
     rules: {
       "react/display-name": "off",
     }

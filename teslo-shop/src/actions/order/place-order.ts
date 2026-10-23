@@ -21,7 +21,7 @@ export const placeOrder = async (
   // 1. Verificar sesión
   if (!userId) {
     return {
-      ok: false,
+      ok: false as const,
       message: "No hay sesión de usuario",
     };
   }
@@ -34,7 +34,7 @@ export const placeOrder = async (
     )
   ) {
     return {
-      ok: false,
+      ok: false as const,
       message: "Los productos deben tener cantidades válidas",
     };
   }
@@ -58,6 +58,25 @@ export const placeOrder = async (
       products.map((p) => [p.id, p])
     );
 
+    const orderItems = productIds.map((item) => {
+      const product = productsById.get(item.productId);
+
+      if (!product) {
+        throw new Error(`${item.productId} no existe`);
+      }
+
+      if (!product.sizes.includes(item.size)) {
+        throw new Error(`La talla ${item.size} no está disponible para ${product.title}`);
+      }
+
+      return {
+        productId: product.id,
+        quantity: item.quantity,
+        size: item.size,
+        price: product.price,
+      };
+    });
+
     // Agrupar cantidades por producto
     const quantities = new Map<string, number>();
 
@@ -74,15 +93,9 @@ export const placeOrder = async (
       0
     );
 
-    const { subTotal, tax, total } = productIds.reduce(
+    const { subTotal, tax, total } = orderItems.reduce(
       (totals, item) => {
-        const product = productsById.get(item.productId);
-
-        if (!product) {
-          throw new Error(`${item.productId} no existe`);
-        }
-
-        const itemSubTotal = product.price * item.quantity;
+        const itemSubTotal = item.price * item.quantity;
 
         totals.subTotal += itemSubTotal;
         totals.tax += itemSubTotal * 0.15;
@@ -94,12 +107,12 @@ export const placeOrder = async (
     );
 
     // 4. Transacción de Prisma 8
-    const prismaTx = await db.transaction(async (tx) => {
+    const order = await db.transaction(async (tx) => {
 
       // 4.1. Descontar stock de forma atómica
       for (const [productId, quantity] of quantities) {
 
-        const plan = tx.sql.public.Product
+        const plan = tx.sql.public.product
           .update((p, fns) => ({
             inStock: fns.raw`
               ${p.inStock} - ${quantity}
@@ -125,11 +138,6 @@ export const placeOrder = async (
         }
       }
 
-      // Obtener productos con stock actualizado
-      const updatedProducts = await tx.orm.public.Product
-        .where((p) => p.id.in(uniqueIds))
-        .all();
-
       // 4.2. Crear encabezado de la orden
       const order = await tx.orm.public.Order.create({
         userId,
@@ -142,41 +150,32 @@ export const placeOrder = async (
 
       // 4.3. Crear los detalles de la orden
       await tx.orm.public.OrderItem.createAll(
-        productIds.map((item) => ({
+        orderItems.map((item) => ({
+          ...item,
           orderId: order.id,
-          productId: item.productId,
-          quantity: item.quantity,
-          size: item.size,
-          price: productsById.get(item.productId)!.price,
         }))
       );
 
       // 4.4. Crear dirección de la orden
       const { country, ...restAddress } = address;
 
-      const orderAddress =
-        await tx.orm.public.OrderAddress.create({
+      await tx.orm.public.OrderAddress.create({
           ...restAddress,
           countryId: country,
           orderId: order.id,
         });
 
-      return {
-        updatedProducts,
-        order,
-        orderAddress,
-      };
+      return { id: order.id };
     });
 
     return {
-      ok: true,
-      order: prismaTx.order,
-      prismaTx,
+      ok: true as const,
+      order,
     };
 
   } catch (error: unknown) {
     return {
-      ok: false,
+      ok: false as const,
       message:
         error instanceof Error
           ? error.message

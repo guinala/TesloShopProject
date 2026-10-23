@@ -12,15 +12,7 @@ import { useAddressStore } from '@/store';
 import { deleteUserAddress, setUserAddress } from '@/actions';
 
 
-type FormInputs = {
-  firstName: string;
-  lastName: string;
-  address: string;
-  address2?: string | null | undefined;
-  postalCode: string;
-  city: string;
-  country: string;
-  phone: string;
+type FormInputs = Address & {
   rememberAddress: boolean;
 }
 
@@ -37,7 +29,7 @@ export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
 
   const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>({
     defaultValues: {
-      ...(userStoredAddress as any),
+      ...userStoredAddress,
       rememberAddress: false,
     }
   });
@@ -53,11 +45,11 @@ export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
     if ( address.firstName ) {
       reset(address)
     }
-  },[])
+  },[address, reset])
 
   const onSubmit = async( data: FormInputs ) => {
-    setAddress(data);
     const { rememberAddress, ...restAddress } = data;
+    setAddress(restAddress);
 
     if ( rememberAddress ) {
       await setUserAddress(restAddress, session!.user.id );

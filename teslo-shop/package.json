@@ -4,8 +4,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "npm run contract:emit",
     "dev": "next dev",
+    "prebuild": "npm run contract:emit",
     "build": "next build",
+    "typecheck": "npm run contract:emit && next typegen && tsc --noEmit",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma skills sync || exit 0",
@@ -13,6 +16,7 @@
     "seed": "ts-node src/seed/seed-database.ts"
   },
   "dependencies": {
+    "@paypal/react-paypal-js": "^10.6.0",
     "@prisma/orm-postgres": "^8.0.0-rc.11",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",

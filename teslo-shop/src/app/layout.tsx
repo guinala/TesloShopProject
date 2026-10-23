@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { titleFont } from "@/config/fonts";
-import { Provider } from "@/components";
+import { Providers } from "@/components";
 
 export const metadata: Metadata = {
   title: {
@@ -15,7 +15,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body className={titleFont.className}>
-        <Provider>{children}</Provider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

@@ -32,7 +32,7 @@ const createOrReplaceAddress = async (address: Address, userId: string) => {
     const addressToSave = {
       userId: userId,
       address: address.address,
-      address2: address.address2,
+      address2: address.address2 ?? "",
       countryId: address.country,
       city: address.city,
       firstName: address.firstName,

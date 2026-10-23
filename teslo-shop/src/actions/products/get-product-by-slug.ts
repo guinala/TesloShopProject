@@ -1,8 +1,9 @@
 'use server';
 
 import { db } from "@/prisma/db";
+import type { Product } from "@/interfaces";
 
-export const getProductBySlug = async(slug: string) => {
+export const getProductBySlug = async(slug: string): Promise<Product | null> => {
   try {
 
     const product = await db.orm.public.Product
@@ -17,6 +18,8 @@ export const getProductBySlug = async(slug: string) => {
 
     return {
         ...product,
+        sizes: [...product.sizes],
+        tags: [...product.tags],
         images: product.images.map( image => image.url )
     };
 

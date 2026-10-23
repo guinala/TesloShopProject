@@ -9,20 +9,21 @@ export const getOrdersByUser = async () => {
 
   if (!session?.user) {
     return {
-      ok: false,
+      ok: false as const,
       message: "Debe de estar autenticado",
     };
   }
 
   const orders = await db.orm.public.Order
     .where({ userId: session.user.id })
+    .select("id", "isPaid")
     .include("OrderAddress", (address) =>
       address.select("firstName", "lastName")
     )
     .all();
 
   return {
-    ok: true,
+    ok: true as const,
     orders,
   };
 };

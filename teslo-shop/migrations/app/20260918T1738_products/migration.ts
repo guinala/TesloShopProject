@@ -11,7 +11,7 @@ export default class M extends Migration<Start, End> {
 
   override get operations() {
     return [
-      this.dataTransform(endContract, 'typechange-category-id', {
+      this.dataTransform(this.endContract, 'typechange-category-id', {
         check: () => placeholder('typechange-category-id:check'),
         run: () => placeholder('typechange-category-id:run'),
       }),
@@ -25,7 +25,7 @@ export default class M extends Migration<Start, End> {
           rawTargetTypeForLabel: 'uuid',
         },
       }),
-      this.dataTransform(endContract, 'typechange-product-categoryId', {
+      this.dataTransform(this.endContract, 'typechange-product-categoryId', {
         check: () => placeholder('typechange-product-categoryId:check'),
         run: () => placeholder('typechange-product-categoryId:run'),
       }),
@@ -39,7 +39,7 @@ export default class M extends Migration<Start, End> {
           rawTargetTypeForLabel: 'uuid',
         },
       }),
-      this.dataTransform(endContract, 'typechange-product-id', {
+      this.dataTransform(this.endContract, 'typechange-product-id', {
         check: () => placeholder('typechange-product-id:check'),
         run: () => placeholder('typechange-product-id:run'),
       }),
@@ -53,7 +53,7 @@ export default class M extends Migration<Start, End> {
           rawTargetTypeForLabel: 'uuid',
         },
       }),
-      this.dataTransform(endContract, 'typechange-productImage-productId', {
+      this.dataTransform(this.endContract, 'typechange-productImage-productId', {
         check: () => placeholder('typechange-productImage-productId:check'),
         run: () => placeholder('typechange-productImage-productId:run'),
       }),

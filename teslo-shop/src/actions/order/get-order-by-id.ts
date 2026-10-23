@@ -9,7 +9,7 @@ export const getOrderById = async (id: string) => {
 
   if (!session?.user) {
     return {
-      ok: false,
+      ok: false as const,
       message: "Debe de estar autenticado",
     };
   }
@@ -17,14 +17,15 @@ export const getOrderById = async (id: string) => {
   try {
     const order = await db.orm.public.Order
       .where({ id })
+      .select("id", "userId", "subTotal", "tax", "total", "itemsInOrder", "isPaid")
       .include("OrderAddress")
       .include("OrderItem", (items) =>
         items
-          .select("price", "quantity", "size")
+          .select("id", "price", "quantity", "size")
           .include("product", (product) =>
             product
               .select("title", "slug")
-              .include("ProductImage", (images) =>
+              .include("images", (images) =>
                 images
                   .select("url")
                   .limit(1)
@@ -44,7 +45,7 @@ export const getOrderById = async (id: string) => {
     }
 
     return {
-      ok: true,
+      ok: true as const,
       order,
     };
 
@@ -52,7 +53,7 @@ export const getOrderById = async (id: string) => {
     console.log(error);
 
     return {
-      ok: false,
+      ok: false as const,
       message: "Orden no existe",
     };
   }
