@@ -1,14 +1,17 @@
 'use client';
 
+
 import { generatePaginationNumbers } from '@/utils';
 import Link from 'next/link';
 import clsx from 'clsx';
 import { redirect, usePathname, useSearchParams } from 'next/navigation';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 
+
 interface Props {
   totalPages: number;
 }
+
 
 export const Pagination = ({ totalPages }: Props) => {
 
@@ -21,8 +24,11 @@ export const Pagination = ({ totalPages }: Props) => {
   if (currentPage < 1 || isNaN(+pageString) ) {
     redirect( pathname );
   }
+ 
+
 
   const allPages = generatePaginationNumbers(currentPage, totalPages);
+
 
   const createPageUrl = ( pageNumber: number | string ) => {
 
@@ -33,10 +39,10 @@ export const Pagination = ({ totalPages }: Props) => {
     }
 
     if ( +pageNumber <= 0 ) {
-      return `${ pathname }`; 
+      return `${ pathname }`; //   href="/kid";
     }
 
-    if ( +pageNumber > totalPages ) { 
+    if ( +pageNumber > totalPages ) { // Next > 
       return `${pathname}?${ params.toString() }`;
     }
 
@@ -44,6 +50,8 @@ export const Pagination = ({ totalPages }: Props) => {
     return `${  pathname }?${ params.toString() }`;
 
   }
+
+
 
   return (
     <div className="flex text-center justify-center mt-10 mb-32">

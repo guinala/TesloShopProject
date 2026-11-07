@@ -1,5 +1,6 @@
 export const revalidate = 0;
 
+// https://tailwindcomponents.com/component/hoverable-table
 import { getOrdersByUser } from "@/actions";
 import { Title } from "@/components";
 
@@ -80,6 +81,8 @@ export default async function OrdersPage() {
                 </td>
               </tr>
             ))}
+
+            
           </tbody>
         </table>
       </div>

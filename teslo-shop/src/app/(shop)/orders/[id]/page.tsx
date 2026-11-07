@@ -6,13 +6,15 @@ import { currencyFormat } from "@/utils";
 import { OrderStatus, PayPalButton, Title } from "@/components";
 
 interface Props {
-  params: Promise<{
+  params: {
     id: string;
-  }>;
+  };
 }
 
 export default async function OrdersByIdPage({ params }: Props) {
-  const { id } = await params;
+  const { id } = params;
+
+  // Todo: Llamar el server action
 
   const { ok, order } = await getOrderById(id);
 
@@ -20,11 +22,7 @@ export default async function OrdersByIdPage({ params }: Props) {
     redirect("/");
   }
 
-  const address = order.OrderAddress;
-
-  if (!address) {
-    redirect("/orders");
-  }
+  const address = order!.OrderAddress;
 
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
@@ -34,28 +32,28 @@ export default async function OrdersByIdPage({ params }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
           {/* Carrito */}
           <div className="flex flex-col mt-5">
-            <OrderStatus isPaid={order.isPaid} />
+            <OrderStatus isPaid={order?.isPaid ?? false} />
 
             {/* Items */}
-            {order.OrderItem.map((item) => (
+            {order!.OrderItem.map((item) => (
               <div
-                key={item.id}
+                key={item.product.slug + "-" + item.size}
                 className="flex mb-5"
               >
-                {item.product?.images[0]?.url ? <Image
-                  src={`/products/${item.product.images[0].url}`}
+                <Image
+                  src={`/products/${item.product.ProductImage[0].url}`}
                   width={100}
                   height={100}
                   style={{
                     width: "100px",
                     height: "100px",
                   }}
-                  alt={item.product?.title ?? "Producto no disponible"}
+                  alt={item.product.title}
                   className="mr-5 rounded"
-                /> : <div className="mr-5 flex h-[100px] w-[100px] items-center justify-center rounded bg-gray-100 text-center text-sm">Sin imagen</div>}
+                />
 
                 <div>
-                  <p>{item.product?.title ?? "Producto no disponible"}</p>
+                  <p>{item.product.title}</p>
                   <p>
                     ${item.price} x {item.quantity}
                   </p>
@@ -72,15 +70,15 @@ export default async function OrdersByIdPage({ params }: Props) {
             <h2 className="text-2xl mb-2">Dirección de entrega</h2>
             <div className="mb-10">
               <p className="text-xl">
-                {address.firstName} {address.lastName}
+                {address!.firstName} {address!.lastName}
               </p>
-              <p>{address.address}</p>
-              <p>{address.address2}</p>
-              <p>{address.postalCode}</p>
+              <p>{address!.address}</p>
+              <p>{address!.address2}</p>
+              <p>{address!.postalCode}</p>
               <p>
-                {address.city}, {address.countryId}
+                {address!.city}, {address!.countryId}
               </p>
-              <p>{address.phone}</p>
+              <p>{address!.phone}</p>
             </div>
 
             {/* Divider */}
@@ -91,22 +89,22 @@ export default async function OrdersByIdPage({ params }: Props) {
             <div className="grid grid-cols-2">
               <span>No. Productos</span>
               <span className="text-right">
-                {order.itemsInOrder === 1
+                {order?.itemsInOrder === 1
                   ? "1 artículo"
-                  : `${order.itemsInOrder} artículos`}
+                  : `${order?.itemsInOrder} artículos`}
               </span>
 
               <span>Subtotal</span>
               <span className="text-right">
-                {currencyFormat(order.subTotal)}
+                {currencyFormat(order!.subTotal)}
               </span>
 
               <span>Impuestos (15%)</span>
-              <span className="text-right">{currencyFormat(order.tax)}</span>
+              <span className="text-right">{currencyFormat(order!.tax)}</span>
 
               <span className="mt-5 text-2xl">Total:</span>
               <span className="mt-5 text-2xl text-right">
-                {currencyFormat(order.total)}
+                {currencyFormat(order!.total)}
               </span>
             </div>
 

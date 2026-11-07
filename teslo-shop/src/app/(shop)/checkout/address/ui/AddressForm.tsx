@@ -12,7 +12,15 @@ import { useAddressStore } from '@/store';
 import { deleteUserAddress, setUserAddress } from '@/actions';
 
 
-type FormInputs = Address & {
+type FormInputs = {
+  firstName: string;
+  lastName: string;
+  address: string;
+  address2?: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  phone: string;
   rememberAddress: boolean;
 }
 
@@ -26,10 +34,9 @@ interface Props {
 export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
 
   const router = useRouter();
-
   const { handleSubmit, register, formState: { isValid }, reset } = useForm<FormInputs>({
     defaultValues: {
-      ...userStoredAddress,
+      ...(userStoredAddress as any),
       rememberAddress: false,
     }
   });
@@ -41,14 +48,23 @@ export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
   const setAddress = useAddressStore( state => state.setAddress );
   const address = useAddressStore( state => state.address );
 
+
+
   useEffect(() => {
     if ( address.firstName ) {
       reset(address)
     }
-  },[address, reset])
+  },[])
+  
+
+
+
 
   const onSubmit = async( data: FormInputs ) => {
+    
+
     const { rememberAddress, ...restAddress } = data;
+
     setAddress(restAddress);
 
     if ( rememberAddress ) {
@@ -148,7 +164,9 @@ export const AddressForm = ({ countries, userStoredAddress = {} }: Props) => {
 
         <button
           disabled={ !isValid }
+          // href="/checkout"
           type="submit"
+          // className="btn-primary flex w-full sm:w-1/2 justify-center "
           className={ clsx({
             'btn-primary': isValid,
             'btn-disabled': !isValid,

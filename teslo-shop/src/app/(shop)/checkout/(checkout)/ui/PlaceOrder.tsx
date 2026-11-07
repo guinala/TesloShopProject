@@ -12,8 +12,10 @@ export const PlaceOrder = () => {
 
   const router = useRouter();
   const [loaded, setLoaded] = useState(false);
-  const [errorMessage,  setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+
 
   const address = useAddressStore((state) => state.address);
 
@@ -49,7 +51,7 @@ export const PlaceOrder = () => {
 
     //* Todo salio bien!
     clearCart();
-    router.replace('/orders/' + resp.order.id );
+    router.replace('/orders/' + resp.order?.id );
 
 
   }
@@ -121,7 +123,6 @@ export const PlaceOrder = () => {
         <button
           // href="/orders/123"
           onClick={ onPlaceOrder }
-          disabled={isPlacingOrder}
           className={
             clsx({
               'btn-primary': !isPlacingOrder,
